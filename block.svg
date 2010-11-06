@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns:stage2="http://www.bt.com/tools/designit/design2" xmlns="http://www.w3.org/2000/svg" 
+<svg id="canvas" xmlns:stage2="http://www.bt.com/tools/designit/design2" xmlns="http://www.w3.org/2000/svg" 
 	width="2000" height="2000" version="1.1" baseProfile="full"
 	 onmousemove="move(evt)" onmouseup="up(evt)">
   <title>Design</title>
@@ -48,7 +48,7 @@
 	var dX = width - oldWidth.baseVal.value;
 	var r1 = grp.children[1];
 	r1.setAttribute('y', height / 2.0);
-	var r2 = grp.children[2];
+	var r2 = getEast(grp);
 	r2.setAttribute('x', width - 2.5);
 	r2.setAttribute('y', height / 2.0);
 	var r3 = grp.children[3];
@@ -58,6 +58,24 @@
 	r4.setAttribute('y', height - 2.5);
     }
 
+    function getEast(grp) {
+	return grp.children[2];
+    }
+
+    function updateLinks(grp, grpX, grpY) {
+	var doc = grp.ownerDocument;
+	var links = doc.getElementsByClassName("connector");
+	if (links.length > 0) {
+	    var connector = links[0];
+	    var pth = connector.getAttribute('d');
+	    var pt = getEast(grp);
+	    var x = Number(pt.getAttribute('x')) + grpX;
+ 	    var y = Number(pt.getAttribute('y')) + grpY;
+	    var newpth = pth.replace(/^M [0-9\.]+ [0-9\.]+/,"M " + x  +  " " + y );
+	    connector.setAttribute('d', newpth);		
+	}
+	
+    }
 
 
     function move(evt) {
@@ -67,6 +85,7 @@
 		var x = dX;
 		var y = dY;
 		currentBlock.setAttribute ('transform', 'translate(' + x + ',' + y +  ')');
+		updateLinks(currentBlock, x, y);
 	} else if (mode == RESIZE) {
 		var newX = evt.clientX - startX;
 		var newY = evt.clientY - startY;
@@ -110,7 +129,9 @@
 	  ]]>
 	</script> 
 
-<path d="M 220 70 h 100 v 50 H 400" style="stroke: black; fill:none" />
+
+
+<path class="connector" d="M 220 70 L 400 120" style="stroke: black; fill:none" />
 
 
 <g transform="translate(20,20)"  onmousedown="down(evt)">    
