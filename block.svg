@@ -179,7 +179,9 @@
 	n.setAttribute ('transform', 'translate(' + x1 + ',' + y1 +  ')');
 	var width = x2 - x1;
 	var height = y2 - y1
-	doResize(n, (width < 50) ? 50 : width , (height < 20) ? 20 : height );
+	var txt = n.children[6];
+	txt.textContent = "Click to update";
+	doResize(n, (width < 140) ? 140 : width , (height < 30) ? 30 : height );
 	addingTo.appendChild(n)
 	addingTo = null;
     }
