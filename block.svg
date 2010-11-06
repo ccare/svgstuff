@@ -177,7 +177,9 @@
 	var n = b1.cloneNode(true);
 	n.id = "block" + blockId++;
 	n.setAttribute ('transform', 'translate(' + x1 + ',' + y1 +  ')');
-	doResize(n, x2 - x1, y2 - y1);
+	var width = x2 - x1;
+	var height = y2 - y1
+	doResize(n, (width < 50) ? 50 : width , (height < 20) ? 20 : height );
 	addingTo.appendChild(n)
 	addingTo = null;
     }
