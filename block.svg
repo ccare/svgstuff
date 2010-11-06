@@ -46,37 +46,74 @@
 	txt.setAttribute('y', height / 2 + 4);
 
 	var dX = width - oldWidth.baseVal.value;
-	var r1 = grp.children[1];
-	r1.setAttribute('y', height / 2.0);
-	var r2 = getEast(grp);
-	r2.setAttribute('x', width - 2.5);
-	r2.setAttribute('y', height / 2.0);
-	var r3 = grp.children[3];
-	r3.setAttribute('x', width / 2.0);
-	var r4 = grp.children[4];
-	r4.setAttribute('x', width / 2.0);
-	r4.setAttribute('y', height - 2.5);
+	var w = getWest(grp);
+	w.setAttribute('y', height / 2.0);
+	var e = getEast(grp);
+	e.setAttribute('x', width - 2.5);
+	e.setAttribute('y', height / 2.0);
+	var n = getNorth(grp);
+	n.setAttribute('x', width / 2.0);
+	var s = getSouth(grp);
+	s.setAttribute('x', width / 2.0);
+	s.setAttribute('y', height - 2.5);
     }
 
     function getEast(grp) {
 	return grp.children[2];
     }
 
+    function getWest(grp) {
+	return grp.children[1];
+    }
+    function getNorth(grp) {
+	return grp.children[3];
+    }
+    function getSouth(grp) {
+	return grp.children[4];
+    }
+
     function updateLinks(grp, grpX, grpY) {
 	var doc = grp.ownerDocument;
 	var links = doc.getElementsByClassName("connector");
+
 	if (links.length > 0) {
 	    var connector = links[0];
-	    var pth = connector.getAttribute('d');
-	    var pt = getEast(grp);
-	    var x = Number(pt.getAttribute('x')) + grpX;
- 	    var y = Number(pt.getAttribute('y')) + grpY;
-	    var newpth = pth.replace(/^M [0-9\.]+ [0-9\.]+/,"M " + x  +  " " + y );
-	    connector.setAttribute('d', newpth);		
+ 	    var from = connector.getAttribute('from');
+ 	    var to = connector.getAttribute('to');
+	    if (from == grp.id + "_east") {
+	        var pth = connector.getAttribute('d');
+	        var pt = getEast(grp);
+	        var x = Number(pt.getAttribute('x')) + grpX;
+ 	        var y = Number(pt.getAttribute('y')) + grpY;
+	        var newpth = pth.replace(/^M [0-9\.]+ [0-9\.]+/,"M " + x  +  " " + y );
+	        connector.setAttribute('d', newpth);		
+	    } else if (from == grp.id + "_west") {
+	        var pth = connector.getAttribute('d');
+	        var pt = getWest(grp);
+	        var x = Number(pt.getAttribute('x')) + grpX;
+ 	        var y = Number(pt.getAttribute('y')) + grpY;
+	        var newpth = pth.replace(/^M [0-9\.]+ [0-9\.]+/,"M " + x  +  " " + y );
+	        connector.setAttribute('d', newpth);		
+	    }
+
+	    if (to == grp.id + "_east") {
+	        var pth = connector.getAttribute('d');
+	        var pt = getEast(grp);
+	        var x = Number(pt.getAttribute('x')) + grpX;
+ 	        var y = Number(pt.getAttribute('y')) + grpY;
+	        var newpth = pth.replace(/L [0-9\.]+ [0-9\.]+$/,"L " + x  +  " " + y );
+	        connector.setAttribute('d', newpth);		
+	    } else if (to == grp.id + "_west") {
+	        var pth = connector.getAttribute('d');
+	        var pt = getWest(grp);
+	        var x = Number(pt.getAttribute('x')) + grpX;
+ 	        var y = Number(pt.getAttribute('y')) + grpY;
+	        var newpth = pth.replace(/L [0-9\.]+ [0-9\.]+$/,"L " + x  +  " " + y );
+	        connector.setAttribute('d', newpth);		
+	    }
 	}
 	
     }
-
 
     function move(evt) {
 	if (mode == DRAG) {
@@ -132,10 +169,10 @@
 
 
 
-<path class="connector" d="M 220 70 L 400 120" style="stroke: black; fill:none" />
+<path class="connector" from="block1_east" to="block2_west" d="M 220 70 L 400 120" style="stroke: black; fill:none" />
 
 
-<g transform="translate(20,20)"  onmousedown="down(evt)">    
+<g id="block1" transform="translate(20,20)"  onmousedown="down(evt)">    
 <rect width="200" height="100" style="stroke: #555588; fill: #aaaaff" onclick="click(evt)"   />
 <rect x="-2.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)" onmouseout="out(evt)" />
 <rect x="197.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)" onmouseout="out(evt)" />
@@ -146,13 +183,16 @@
 </g>
 
 
-<g transform="translate(400,70)"   ondblclick="click(evt)" >
-<rect width="200" height="100" style="stroke: #555588; fill: #aaaaff" />
-<rect x="-2.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" />
-<rect x="197.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" />
-<rect x="97.5" y="-2.5" width="5" height="5" style="stroke: #555588; fill: #555588" />
-<rect x="97.5" y="97.5" width="5" height="5" style="stroke: #555588; fill: #555588" />
+<g id="block2" transform="translate(400,70)"  onmousedown="down(evt)">    
+<rect width="200" height="100" style="stroke: #555588; fill: #aaaaff" onclick="click(evt)"   />
+<rect x="-2.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)" onmouseout="out(evt)" />
+<rect x="197.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)" onmouseout="out(evt)" />
+<rect x="97.5" y="-2.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)"  onmouseout="out(evt)" />
+<rect x="97.5" y="97.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)"  onmouseout="out(evt)" />
+<path d="M 200 100 v -13 l -13 13" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)"  onmouseout="out(evt)"  onmousedown="resize(evt)" />
+<text id="text" x="102" y="54" text-anchor="middle"  onclick="edit(evt)">hello</text>
 </g>
+
 
 
 
