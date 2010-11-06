@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg id="canvas" xmlns:stage2="http://www.bt.com/tools/designit/design2" xmlns="http://www.w3.org/2000/svg" 
 	width="2000" height="2000" version="1.1" baseProfile="full"
-	 onmousemove="move(evt)" onmouseup="up(evt)">
+	 onmousemove="move(evt)" onmouseup="up(evt)" onmousedown="create(evt)">
   <title>Design</title>
  <script language="JavaScript" type="text/javascript">
 	  <![CDATA[
+    var CREATE = 0;
     var DRAG = 1;
     var RESIZE = 2;
     var currentBlock;
@@ -130,6 +131,10 @@
     }
 
     function move(evt) {
+	if (currentBlock == null) {
+		return;
+	}
+
 	if (mode == DRAG) {
 		var dX = evt.clientX - startX;
 		var dY = evt.clientY - startY;
@@ -142,15 +147,51 @@
 		var newY = evt.clientY - startY;
 		doResize(currentBlock, newX, newY);
 		updateLinks(currentBlock, startX, startY );
-	} else {
-		alert();
-	}	
+	} 
     }
 
 
     function up(evt) {
-        currentBlock=null;
+	if (mode == CREATE) {
+		createBlock(startX, startY, evt.layerX, evt.layerY);
+	}
+	currentBlock=null;
 	mode = DRAG;
+    }
+
+    blockId = 10;
+
+    function createBlock(x1,y1,x2,y2) {
+	if (x1 > x2) {
+		var tmp = x1;
+		x1 = x2;
+		x2 = tmp;
+	}
+	if (y1 > y2) {
+		var tmp = y1;
+		y1 = y2;
+		y2 = tmp;
+	}
+
+	var b1 = document.getElementById("block1");
+	var n = b1.cloneNode(true);
+	n.id = "block" + blockId++;
+	n.setAttribute ('transform', 'translate(' + x1 + ',' + y1 +  ')');
+	doResize(n, x2 - x1, y2 - y1);
+	addingTo.appendChild(n)
+	addingTo = null;
+    }
+
+    var addingTo = null;
+
+    function create(evt) {
+	var t = evt.target;
+	if (t.ownerDocument == t.parentNode) {
+		mode = CREATE;
+		startX = evt.layerX;
+		startY = evt.layerY;
+		addingTo = t;
+	}
     }
 
     function highlight(evt) {
@@ -188,7 +229,7 @@
 
 
 <g id="block1" transform="translate(20,20)"  onmousedown="down(evt)">    
-<rect width="200" height="100" style="stroke: #555588; fill: #aaaaff" onclick="click(evt)"   />
+<rect width="200" height="100" style="stroke: #555588; fill: #aaaaff" onclick="click(evt)" onmousedown=""   />
 <rect x="-2.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)" onmouseout="out(evt)" />
 <rect x="197.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)" onmouseout="out(evt)" />
 <rect x="97.5" y="-2.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)"  onmouseout="out(evt)" />
@@ -199,7 +240,7 @@
 
 
 <g id="block2" transform="translate(400,70)"  onmousedown="down(evt)">    
-<rect width="200" height="100" style="stroke: #555588; fill: #aaaaff" onclick="click(evt)"   />
+<rect width="200" height="100" style="stroke: #555588; fill: #aaaaff" onclick="click(evt)"  onmousedown=""  />
 <rect x="-2.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)" onmouseout="out(evt)" />
 <rect x="197.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)" onmouseout="out(evt)" />
 <rect x="97.5" y="-2.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)"  onmouseout="out(evt)" />
@@ -209,7 +250,7 @@
 </g>
 
 <g id="block3" transform="translate(400,200)"  onmousedown="down(evt)">    
-<rect width="200" height="100" style="stroke: #555588; fill: #aaaaff" onclick="click(evt)"   />
+<rect width="200" height="100" style="stroke: #555588; fill: #aaaaff" onclick="click(evt)" onmousedown=""   />
 <rect x="-2.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)" onmouseout="out(evt)" />
 <rect x="197.5" y="47.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)" onmouseout="out(evt)" />
 <rect x="97.5" y="-2.5" width="5" height="5" style="stroke: #555588; fill: #555588" onmouseover="highlight(evt)"  onmouseout="out(evt)" />
