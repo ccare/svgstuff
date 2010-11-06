@@ -90,6 +90,7 @@
 		var newX = evt.clientX - startX;
 		var newY = evt.clientY - startY;
 		doResize(currentBlock, newX, newY);
+		updateLinks(currentBlock, startX, startY );
 	} else {
 		alert();
 	}	
